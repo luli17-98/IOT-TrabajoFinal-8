@@ -1,0 +1,595 @@
+[
+  {
+    "id": "f1a0000000000001",
+    "type": "tab",
+    "label": "Monitor Heladera IoT",
+    "disabled": false,
+    "info": "Trabajo final IoT - Luciana Belén Garay"
+  },
+  {
+    "id": "c1a0000000000001",
+    "type": "mqtt-broker",
+    "name": "Broker local",
+    "broker": "localhost",
+    "port": "1883",
+    "clientid": "",
+    "autoConnect": true,
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "autoUnsubscribe": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthPayload": "",
+    "birthMsg": {},
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "",
+    "closeMsg": {},
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": "",
+    "willMsg": {},
+    "userProps": "",
+    "sessionExpiry": ""
+  },
+  {
+    "id": "c1a0000000000002",
+    "type": "sqlitedb",
+    "db": "heladera.db",
+    "mode": "RWC"
+  },
+  {
+    "id": "c1a0000000000003",
+    "type": "ui-base",
+    "name": "Monitor Heladera",
+    "path": "/dashboard",
+    "includeClientData": true,
+    "acceptsClientConfig": [
+      "ui-notification",
+      "ui-control"
+    ],
+    "showPathInSidebar": false,
+    "showPageTitle": true,
+    "navigationStyle": "default",
+    "titleBarStyle": "default"
+  },
+  {
+    "id": "c1a0000000000004",
+    "type": "ui-theme",
+    "name": "Tema oscuro",
+    "colors": {
+      "surface": "#1e293b",
+      "primary": "#22c55e",
+      "bgPage": "#0f172a",
+      "groupBg": "#1e293b",
+      "groupOutline": "#334155"
+    },
+    "sizes": {
+      "density": "default",
+      "pagePadding": "12px",
+      "groupGap": "12px",
+      "groupBorderRadius": "8px",
+      "widgetGap": "12px"
+    }
+  },
+  {
+    "id": "c1a0000000000005",
+    "type": "ui-page",
+    "name": "Heladera",
+    "ui": "c1a0000000000003",
+    "path": "/heladera",
+    "icon": "fridge",
+    "layout": "grid",
+    "theme": "c1a0000000000004",
+    "breakpoints": [
+      {
+        "name": "Default",
+        "px": "0",
+        "cols": "3"
+      },
+      {
+        "name": "Tablet",
+        "px": "576",
+        "cols": "6"
+      },
+      {
+        "name": "Small Desktop",
+        "px": "768",
+        "cols": "9"
+      },
+      {
+        "name": "Desktop",
+        "px": "1024",
+        "cols": "12"
+      }
+    ],
+    "order": 1,
+    "className": "",
+    "visible": "true",
+    "disabled": "false"
+  },
+  {
+    "id": "c1a0000000000006",
+    "type": "ui-group",
+    "name": "Estado actual",
+    "page": "c1a0000000000005",
+    "width": "12",
+    "height": "1",
+    "order": 1,
+    "showTitle": true,
+    "className": "",
+    "visible": "true",
+    "disabled": "false",
+    "groupType": "default"
+  },
+  {
+    "id": "c1a0000000000007",
+    "type": "ui-group",
+    "name": "Historial",
+    "page": "c1a0000000000005",
+    "width": "12",
+    "height": "1",
+    "order": 2,
+    "showTitle": true,
+    "className": "",
+    "visible": "true",
+    "disabled": "false",
+    "groupType": "default"
+  },
+  {
+    "id": "a1a0000000000001",
+    "type": "comment",
+    "z": "f1a0000000000001",
+    "x": 200,
+    "y": 40,
+    "name": "1) Broker MQTT + crear tabla al iniciar",
+    "info": ""
+  },
+  {
+    "id": "a1a0000000000002",
+    "type": "aedes broker",
+    "z": "f1a0000000000001",
+    "x": 160,
+    "y": 80,
+    "name": "Broker MQTT (puerto 1883)",
+    "mqtt_port": 1883,
+    "mqtt_ws_bind": "port",
+    "mqtt_ws_port": "",
+    "mqtt_ws_path": "",
+    "cert": "",
+    "key": "",
+    "certname": "",
+    "keyname": "",
+    "persistence_bind": "memory",
+    "dburl": "",
+    "usetls": false,
+    "wires": [
+      [],
+      []
+    ]
+  },
+  {
+    "id": "a1a0000000000003",
+    "type": "inject",
+    "z": "f1a0000000000001",
+    "x": 160,
+    "y": 140,
+    "name": "Al iniciar",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "1",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "wires": [
+      [
+        "a1a0000000000004"
+      ]
+    ]
+  },
+  {
+    "id": "a1a0000000000004",
+    "type": "sqlite",
+    "z": "f1a0000000000001",
+    "x": 420,
+    "y": 140,
+    "mydb": "c1a0000000000002",
+    "sqlquery": "fixed",
+    "sql": "CREATE TABLE IF NOT EXISTS lecturas (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  fecha DATETIME DEFAULT (datetime('now','localtime')),\n  temperatura REAL,\n  humedad REAL,\n  alerta INTEGER\n)",
+    "name": "Crear tabla lecturas",
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "a1a0000000000010",
+    "type": "comment",
+    "z": "f1a0000000000001",
+    "x": 230,
+    "y": 220,
+    "name": "2) Recibir datos del sensor (MQTT) y procesarlos",
+    "info": ""
+  },
+  {
+    "id": "a1a0000000000011",
+    "type": "mqtt in",
+    "z": "f1a0000000000001",
+    "x": 160,
+    "y": 300,
+    "name": "Sensor heladera",
+    "topic": "heladera/sensor",
+    "qos": "0",
+    "datatype": "json",
+    "broker": "c1a0000000000001",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "wires": [
+      [
+        "a1a0000000000012"
+      ]
+    ]
+  },
+  {
+    "id": "a1a0000000000012",
+    "type": "function",
+    "z": "f1a0000000000001",
+    "x": 400,
+    "y": 300,
+    "name": "Analizar lectura",
+    "func": "// Leemos los datos que mandó el sensor\nconst t = Number(msg.payload.temperatura);\nconst h = Number(msg.payload.humedad);\nconst LIMITE = 8; // °C máximo permitido\n\nconst hayAlerta = t > LIMITE;\n\n// Salida 1: datos para guardar en la base de datos\nconst paraBD = { params: { $t: t, $h: h, $a: hayAlerta ? 1 : 0 } };\n\n// Salida 2 y 3: datos para el dashboard\nconst temp = { topic: \"Temperatura (°C)\", payload: t };\nconst hum  = { topic: \"Humedad (%)\", payload: h };\n\n// Salida 4: alerta (solo si se pasó del límite)\nlet alerta = null;\nif (hayAlerta) {\n    alerta = { payload: \"ALERTA: la heladera está a \" + t + \" °C (límite \" + LIMITE + \" °C). Se envió la orden ENFRIAR.\" };\n    node.warn(alerta.payload);\n}\n\nnode.status({ fill: hayAlerta ? \"red\" : \"green\", shape: \"dot\", text: t + \" °C\" });\nreturn [paraBD, temp, hum, alerta];",
+    "outputs": 4,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "wires": [
+      [
+        "a1a0000000000013"
+      ],
+      [
+        "a1a0000000000014",
+        "a1a0000000000016"
+      ],
+      [
+        "a1a0000000000015",
+        "a1a0000000000016"
+      ],
+      [
+        "a1a0000000000017",
+        "a1a0000000000018"
+      ]
+    ]
+  },
+  {
+    "id": "a1a0000000000013",
+    "type": "sqlite",
+    "z": "f1a0000000000001",
+    "x": 690,
+    "y": 260,
+    "mydb": "c1a0000000000002",
+    "sqlquery": "prepared",
+    "sql": "INSERT INTO lecturas (temperatura, humedad, alerta) VALUES ($t, $h, $a)",
+    "name": "Guardar en BD",
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "a1a0000000000014",
+    "type": "ui-gauge",
+    "z": "f1a0000000000001",
+    "x": 690,
+    "y": 300,
+    "name": "Temperatura",
+    "group": "c1a0000000000006",
+    "order": 1,
+    "width": 6,
+    "height": 4,
+    "gtype": "gauge-half",
+    "gstyle": "needle",
+    "title": "Temperatura",
+    "units": "°C",
+    "icon": "thermometer",
+    "prefix": "",
+    "suffix": "°C",
+    "segments": [
+      {
+        "from": "-5",
+        "color": "#3b82f6"
+      },
+      {
+        "from": "2",
+        "color": "#22c55e"
+      },
+      {
+        "from": "8",
+        "color": "#ef4444"
+      }
+    ],
+    "min": "-5",
+    "max": "20",
+    "sizeThickness": 16,
+    "sizeGap": 4,
+    "sizeKeyThickness": 8,
+    "styleRounded": true,
+    "styleGlow": false,
+    "className": "",
+    "wires": []
+  },
+  {
+    "id": "a1a0000000000015",
+    "type": "ui-gauge",
+    "z": "f1a0000000000001",
+    "x": 690,
+    "y": 340,
+    "name": "Humedad",
+    "group": "c1a0000000000006",
+    "order": 2,
+    "width": 6,
+    "height": 4,
+    "gtype": "gauge-half",
+    "gstyle": "needle",
+    "title": "Humedad",
+    "units": "%",
+    "icon": "water-percent",
+    "prefix": "",
+    "suffix": "%",
+    "segments": [
+      {
+        "from": "0",
+        "color": "#f59e0b"
+      },
+      {
+        "from": "40",
+        "color": "#22c55e"
+      },
+      {
+        "from": "80",
+        "color": "#3b82f6"
+      }
+    ],
+    "min": "0",
+    "max": "100",
+    "sizeThickness": 16,
+    "sizeGap": 4,
+    "sizeKeyThickness": 8,
+    "styleRounded": true,
+    "styleGlow": false,
+    "className": "",
+    "wires": []
+  },
+  {
+    "id": "a1a0000000000016",
+    "type": "ui-chart",
+    "z": "f1a0000000000001",
+    "x": 690,
+    "y": 380,
+    "group": "c1a0000000000007",
+    "name": "Gráfico",
+    "label": "Temperatura y humedad",
+    "order": 1,
+    "chartType": "line",
+    "category": "topic",
+    "categoryType": "msg",
+    "xAxisLabel": "",
+    "xAxisProperty": "",
+    "xAxisPropertyType": "timestamp",
+    "xAxisType": "time",
+    "xAxisFormat": "",
+    "xAxisFormatType": "auto",
+    "yAxisLabel": "",
+    "yAxisProperty": "payload",
+    "yAxisPropertyType": "msg",
+    "ymin": "",
+    "ymax": "",
+    "action": "append",
+    "stackSeries": false,
+    "pointShape": "circle",
+    "pointRadius": 4,
+    "showLegend": true,
+    "removeOlder": "10",
+    "removeOlderUnit": "60",
+    "removeOlderPoints": "",
+    "colors": [
+      "#ef4444",
+      "#3b82f6",
+      "#22c55e",
+      "#f59e0b",
+      "#a855f7",
+      "#14b8a6",
+      "#ec4899",
+      "#64748b",
+      "#eab308"
+    ],
+    "textColor": [
+      "#cbd5e1"
+    ],
+    "textColorDefault": false,
+    "gridColor": [
+      "#334155"
+    ],
+    "gridColorDefault": false,
+    "width": "12",
+    "height": "6",
+    "className": "",
+    "interpolation": "linear",
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "a1a0000000000020",
+    "type": "comment",
+    "z": "f1a0000000000001",
+    "x": 220,
+    "y": 460,
+    "name": "3) Automatización: alerta + orden ENFRIAR",
+    "info": ""
+  },
+  {
+    "id": "a1a0000000000017",
+    "type": "ui-notification",
+    "z": "f1a0000000000001",
+    "x": 700,
+    "y": 440,
+    "ui": "c1a0000000000003",
+    "position": "top right",
+    "colorDefault": false,
+    "color": "#ef4444",
+    "displayTime": "5",
+    "showCountdown": true,
+    "outputs": 1,
+    "allowDismiss": true,
+    "dismissText": "Cerrar",
+    "allowConfirm": false,
+    "confirmText": "Confirmar",
+    "raw": false,
+    "className": "",
+    "name": "Aviso en pantalla",
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "a1a0000000000018",
+    "type": "change",
+    "z": "f1a0000000000001",
+    "x": 700,
+    "y": 500,
+    "name": "Orden ENFRIAR",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "ENFRIAR",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "to": "",
+    "reg": false,
+    "wires": [
+      [
+        "a1a0000000000019"
+      ]
+    ],
+    "from": ""
+  },
+  {
+    "id": "a1a0000000000019",
+    "type": "mqtt out",
+    "z": "f1a0000000000001",
+    "x": 920,
+    "y": 500,
+    "name": "Comando a la heladera",
+    "topic": "heladera/comando",
+    "qos": "0",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "c1a0000000000001",
+    "wires": []
+  },
+  {
+    "id": "a1a0000000000030",
+    "type": "comment",
+    "z": "f1a0000000000001",
+    "x": 220,
+    "y": 580,
+    "name": "4) API HTTP: ver las últimas lecturas",
+    "info": ""
+  },
+  {
+    "id": "a1a0000000000031",
+    "type": "http in",
+    "z": "f1a0000000000001",
+    "x": 170,
+    "y": 620,
+    "name": "GET /api/lecturas",
+    "url": "/api/lecturas",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "wires": [
+      [
+        "a1a0000000000032"
+      ]
+    ]
+  },
+  {
+    "id": "a1a0000000000032",
+    "type": "sqlite",
+    "z": "f1a0000000000001",
+    "x": 430,
+    "y": 620,
+    "mydb": "c1a0000000000002",
+    "sqlquery": "fixed",
+    "sql": "SELECT * FROM lecturas ORDER BY id DESC LIMIT 20",
+    "name": "Últimas 20 lecturas",
+    "wires": [
+      [
+        "a1a0000000000033"
+      ]
+    ]
+  },
+  {
+    "id": "a1a0000000000033",
+    "type": "http response",
+    "z": "f1a0000000000001",
+    "x": 660,
+    "y": 620,
+    "name": "Responder JSON",
+    "statusCode": "",
+    "headers": {},
+    "wires": []
+  },
+  {
+    "id": "a1a0000000000034",
+    "type": "http in",
+    "z": "f1a0000000000001",
+    "x": 170,
+    "y": 680,
+    "name": "GET /api/alertas",
+    "url": "/api/alertas",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "wires": [
+      [
+        "a1a0000000000035"
+      ]
+    ]
+  },
+  {
+    "id": "a1a0000000000035",
+    "type": "sqlite",
+    "z": "f1a0000000000001",
+    "x": 430,
+    "y": 680,
+    "mydb": "c1a0000000000002",
+    "sqlquery": "fixed",
+    "sql": "SELECT * FROM lecturas WHERE alerta = 1 ORDER BY id DESC",
+    "name": "Solo alertas",
+    "wires": [
+      [
+        "a1a0000000000033"
+      ]
+    ]
+  }
+]
